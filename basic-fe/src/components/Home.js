@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Col, Container, Row } from "reactstrap";
-
+import Chart from './Chart'
 import axios from "axios";
 
 import { API_URL } from "../constants";
@@ -44,7 +44,7 @@ class Home extends Component {
                               onSelect={this.selectFile}/></Col>
 
         </Row>
-
+        <Chart />
       </Container>
     );
   }
