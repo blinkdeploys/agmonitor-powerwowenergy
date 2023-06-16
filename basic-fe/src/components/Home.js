@@ -18,7 +18,7 @@ class Home extends Component {
       let newChoice = event.target.value;
       this.setState({...this.state, currentSelectedFile: newChoice});
       // TODO: replace this alert with code to load and show data
-      alert("selecting new file: " + newChoice);
+      // alert("selecting new file: " + newChoice);
     }
     this.selectFile = this.selectFile.bind(this);
   }
@@ -28,8 +28,13 @@ class Home extends Component {
   }
 
   getFileChoices = () => {
-    axios.get(API_URL + "files").then(res =>
-        this.setState({ ...this.state, fileChoices: res.data.files }));
+    axios.get(API_URL + "files").then((res) => {
+        this.setState({
+          ...this.state,
+          fileChoices: res.data.files,
+          currentSelectedFile: res.data.files[0] || '',
+        })
+      });
   };
 
   resetState = () => {
@@ -39,12 +44,14 @@ class Home extends Component {
   render() {
     return (
       <Container style={{ marginTop: "20px" }}>
-        <Row><Col><SelectFile fileChoices={this.state.fileChoices}
-                              currentSelection={this.state.currentSelectedFile}
-                              onSelect={this.selectFile}/></Col>
-
+        <Row>
+          <Col>
+            <SelectFile fileChoices={this.state.fileChoices}
+                        currentSelection={this.state.currentSelectedFile}
+                        onSelect={this.selectFile} />
+          </Col>
         </Row>
-        <Chart />
+        <Chart chartFile={this.state.currentSelectedFile} />
       </Container>
     );
   }
