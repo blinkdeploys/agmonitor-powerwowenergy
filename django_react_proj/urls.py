@@ -19,7 +19,8 @@ from pump_data import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^api/pump_data/files$', views.data_files),
+    re_path(r'^api/pump_data/files$', views.data_files, name="data_files"),
+    re_path(r'^api/pump_data/(?P<filename>[A-Za-z0-9_\.]+)$', views.data_file, name="data_file"),
     # re_path(r'^api/students/$', views.students_list),
     # re_path(r'^api/students/(?P<pk>[0-9]+)$', views.students_detail),
 ]
