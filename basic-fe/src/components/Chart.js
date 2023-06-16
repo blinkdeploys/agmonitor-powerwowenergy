@@ -1,61 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import Papa from 'papaparse'
 import HChartBoost from 'highcharts/modules/boost'
 import HChartStock from 'highcharts/modules/stock'
+import HChartAccessibility from 'highcharts/modules/accessibility'
+import useFetchPumpData from '../hooks/useFetchPumpData'
 
 
+// pan and zoom functionalities
 HChartBoost(Highcharts)
 HChartStock(Highcharts)
+// accessibilty
+HChartAccessibility(Highcharts)
 
-const Chart = () => {
-    const [highChartsOptions, setHighChartsOptions] = useState({});
+const Chart = ({ chartFile }) => {
     const chartRef = useRef(null)
-    
-    useEffect(() => {
-        const fetchChartOptions = async () => {
-            const response = await fetch('mock/pump_data.csv');
-            const reader = response.body.getReader();
-            const result = await reader.read();
-            const decoder = new TextDecoder('utf-8');
-            const csvData = decoder.decode(result.value);
-            const { data } = Papa.parse(csvData, { header: true });
-            const chartCategories = data.map(entry => entry.timestamp);
-            const chartData = data.map(entry => Number(entry.amount));
-            const chartOptions = {
-                chart: {
-                  zoomType: 'x',
-                  panning: true,
-                  panKey: 'shift',
-                },
-                title: {
-                  text: 'Electric Meter Power Data',
-                },
-                yAxis: {
-                    min: 0,
-                },
-                xAxis: {
-                  categories: chartCategories,
-                },
-                series: [
-                  {
-                    name: 'Amount',
-                    data: chartData,
-                  },
-                ],
-              };
-              setHighChartsOptions(chartOptions);
-        }
-        fetchChartOptions()
-    }, []);
+    let { chartOptions, isLoading } = useFetchPumpData(chartFile || '')
 
     return (
-        <HighchartsReact
-            highcharts={Highcharts}
-            options={highChartsOptions}
-            ref={chartRef}
-            />
+        <>
+            {isLoading && <div align="center">Loading pump data...</div>}
+            {!isLoading && !chartOptions && <div>No chart data available. Please select the a CSV file to load chart.</div>}
+            {!isLoading && chartOptions && <HighchartsReact
+                                                highcharts={Highcharts}
+                                                options={chartOptions}
+                                                ref={chartRef}
+                                                />}
+        </>
     )
 }
 
