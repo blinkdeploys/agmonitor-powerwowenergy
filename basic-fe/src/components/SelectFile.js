@@ -19,8 +19,8 @@ export function SelectFile({fileChoices, currentSelection, onSelect}) {
                                name={"selectedFile"}
                                onChange={onSelect}
                                type={"select"}>
-                            {fileChoices.map((choice) => {
-                                return (<option selected={currentSelection === choice}>{choice}</option>);
+                            {fileChoices.map((choice, cid) => {
+                                return (<option key={cid} defaultValue={currentSelection === choice}>{choice}</option>);
                             })}
                         </Input>
                     </FormGroup>
