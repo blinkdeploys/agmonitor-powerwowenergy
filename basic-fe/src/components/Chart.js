@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import Papa from 'papaparse'
+import HChartBoost from 'highcharts/modules/boost'
+import HChartStock from 'highcharts/modules/stock'
 
+
+HChartBoost(Highcharts)
+HChartStock(Highcharts)
 
 const Chart = () => {
     const [highChartsOptions, setHighChartsOptions] = useState({});
+    const chartRef = useRef(null)
     
     useEffect(() => {
         const fetchChartOptions = async () => {
@@ -48,6 +54,7 @@ const Chart = () => {
         <HighchartsReact
             highcharts={Highcharts}
             options={highChartsOptions}
+            ref={chartRef}
             />
     )
 }
